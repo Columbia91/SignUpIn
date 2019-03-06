@@ -24,29 +24,29 @@ namespace SignUpIn
                     "\n3) Выход");
                 int choice = int.Parse(Console.ReadLine());
 
-                if (choice == 1)
+            if (choice == 1)
+            {
+                User user = new User();
+
+                DataContractJsonSerializer jsonFormatter = new DataContractJsonSerializer(typeof(List<User>));
+
+                JsonReading(jsonFormatter);
+
+                EnterLogin(user);
+                EnterPassword(user);
+                ConfirmPassword(user);
+                EnterEmail(user);
+                EnterPhoneNumber(user);
+
+                users.Add(user);
+
+                using (FileStream fs = new FileStream("people.json", FileMode.OpenOrCreate)) // папка bin -> debug
                 {
-                    User user = new User();
+                    jsonFormatter.WriteObject(fs, users);
 
-                    DataContractJsonSerializer jsonFormatter = new DataContractJsonSerializer(typeof(List<User>));
-
-                    JsonReading(jsonFormatter);
-
-                    EnterLogin(user);
-                    EnterPassword(user);
-                    ConfirmPassword(user);
-                    EnterEmail(user);
-                    EnterPhoneNumber(user);
-                
-                    users.Add(user);
-
-                    using (FileStream fs = new FileStream("people.json", FileMode.OpenOrCreate)) // папка bin -> debug
-                    {
-                        jsonFormatter.WriteObject(fs, users);
-
-                        Console.WriteLine("JSON Serialization passed successfully");
-                    }
+                    Console.WriteLine("JSON Serialization passed successfully");
                 }
+            }
             else if (choice == 2)
             {
                 User user = new User();
@@ -57,19 +57,41 @@ namespace SignUpIn
                 JsonReading(jsonFormatter);
 
                 while (check) {
+                    Console.Clear();
                     Console.Write("Введите данные: " +
                         "\nЛогин: ");
                     user.Login = Console.ReadLine();
                     Console.Write("Пароль: ");
-                    user.Password = Console.ReadLine();
+                    user.Password = HideCharacter();
+                    user.Password = user.Password.TrimEnd(user.Password[user.Password.Length - 1]);
 
                     for (int i = 0; i < users.Count; i++)
                     {
-                        if (user.Login)
-                } }
+                        if (user.Login == users[i].Login)
+                        {
+                            if (user.Password != users[i].Password)
+                            {
+                                Console.WriteLine("\nВы ввели неправильный пароль, нажмите Enter чтобы ввести заново...");
+                                Console.ReadKey(); break;
+                            }
+                            else
+                            {
+                                check = false; break;
+                            }
+                        }
+                        if (i == users.Count - 1)
+                        {
+                            Console.WriteLine("\nУказанный Вами логин не существует, нажмите Enter чтобы ввести заново...");
+                            Console.ReadKey();
+                        }
+                    }
+                }
             }
-            Console.ReadLine();
+            else
+            {
+                return;
             }
+        }
 
         #region Вывод на консоль
         static void Show(User user, int numb, string stars = "", string stars2 = "")
@@ -120,6 +142,16 @@ namespace SignUpIn
                 user.Login = "";
                 Console.ReadKey();
                 EnterLogin(user);
+            }
+            for (int i = 0; i < users.Count; i++)
+            {
+                if(user.Login == users[i].Login)
+                {
+                    Console.WriteLine("Пользователь с таким логином уже существует, нажмите Enter чтобы ввести заново...");
+                    user.Login = "";
+                    Console.ReadKey();
+                    EnterLogin(user);
+                }
             }
         }
         #endregion
@@ -191,6 +223,16 @@ namespace SignUpIn
                 Console.ReadKey();
                 EnterEmail(user);
             }
+            for (int i = 0; i < users.Count; i++)
+            {
+                if (user.Email == users[i].Email)
+                {
+                    Console.WriteLine("Данный почтовый адрес уже используется, нажмите Enter чтобы ввести заново...");
+                    user.Email = "";
+                    Console.ReadKey();
+                    EnterEmail(user);
+                }
+            }
         }
         #endregion
 
@@ -212,6 +254,16 @@ namespace SignUpIn
                 user.PhoneNumber = "";
                 Console.ReadKey();
                 EnterPhoneNumber(user);
+            }
+            for (int i = 0; i < users.Count; i++)
+            {
+                if (user.PhoneNumber == users[i].PhoneNumber)
+                {
+                    Console.WriteLine("Данный номер уже используется, нажмите Enter чтобы ввести заново...");
+                    user.PhoneNumber = "";
+                    Console.ReadKey();
+                    EnterPhoneNumber(user);
+                }
             }
         }
         #endregion
