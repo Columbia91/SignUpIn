@@ -294,10 +294,19 @@ namespace SignUpIn
         #region Десериализация
         static void JsonReading(DataContractJsonSerializer jsonFormatter)
         {
-            string[] str = File.ReadAllLines("people.json");
+            string path = "people.json";
+            FileInfo file = new FileInfo(path);
+            
+            if (!file.Exists)
+            {
+                var myFile = File.Create(path);
+                myFile.Close();
+            }
+            string[] str = File.ReadAllLines(path);
+
             if (str.Length > 0)
             {
-                using (FileStream fs = new FileStream("people.json", FileMode.OpenOrCreate))
+                using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
                 {
                     users = (List<User>)jsonFormatter.ReadObject(fs);
                 }
