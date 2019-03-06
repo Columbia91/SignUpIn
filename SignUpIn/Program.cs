@@ -1,12 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Text.RegularExpressions;
-using Twilio; // консоль диспетчера пакетов Install-Package Twilio
-using Twilio.Rest.Api.V2010.Account;
-using System.Xml.Serialization;
 using System.IO;
 using System.Runtime.Serialization.Json;
 using System.Runtime.Serialization;
