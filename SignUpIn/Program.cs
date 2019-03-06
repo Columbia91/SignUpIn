@@ -41,6 +41,7 @@ namespace SignUpIn
                     {
                         jsonFormatter.WriteObject(fs, users);
                     }
+                    Console.WriteLine("Вы прошли регистрацию...\n");
                     return;
                 }
                 else if (choice == 2)
