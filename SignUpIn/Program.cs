@@ -43,8 +43,6 @@ namespace SignUpIn
                 using (FileStream fs = new FileStream("people.json", FileMode.OpenOrCreate)) // папка bin -> debug
                 {
                     jsonFormatter.WriteObject(fs, users);
-
-                    Console.WriteLine("JSON Serialization passed successfully");
                 }
             }
             else if (choice == 2)
