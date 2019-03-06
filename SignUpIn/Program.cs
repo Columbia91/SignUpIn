@@ -10,78 +10,93 @@ namespace SignUpIn
 {
     class Program
     {
+        static int choice;
         public static List<User> users = new List<User>();
         static void Main(string[] args)
         {
                 Console.WriteLine("1) Регистрация" +
                     "\n2) Вход" +
                     "\n3) Выход");
-                int choice = int.Parse(Console.ReadLine());
+                choice = int.Parse(Console.ReadLine());
 
-            if (choice == 1)
+            while (true)
             {
-                User user = new User();
-
-                DataContractJsonSerializer jsonFormatter = new DataContractJsonSerializer(typeof(List<User>));
-
-                JsonReading(jsonFormatter);
-
-                EnterLogin(user);
-                EnterPassword(user);
-                ConfirmPassword(user);
-                EnterEmail(user);
-                EnterPhoneNumber(user);
-
-                users.Add(user);
-
-                using (FileStream fs = new FileStream("people.json", FileMode.OpenOrCreate)) // папка bin -> debug
+                if (choice == 1)
                 {
-                    jsonFormatter.WriteObject(fs, users);
-                }
-            }
-            else if (choice == 2)
-            {
-                User user = new User();
-                bool check = true;
+                    User user = new User();
 
-                DataContractJsonSerializer jsonFormatter = new DataContractJsonSerializer(typeof(List<User>));
+                    DataContractJsonSerializer jsonFormatter = new DataContractJsonSerializer(typeof(List<User>));
 
-                JsonReading(jsonFormatter);
+                    JsonReading(jsonFormatter);
 
-                while (check) {
-                    Console.Clear();
-                    Console.Write("Введите данные: " +
-                        "\nЛогин: ");
-                    user.Login = Console.ReadLine();
-                    Console.Write("Пароль: ");
-                    user.Password = HideCharacter();
-                    user.Password = user.Password.TrimEnd(user.Password[user.Password.Length - 1]);
+                    EnterLogin(user);
+                    EnterPassword(user);
+                    ConfirmPassword(user);
+                    EnterEmail(user);
+                    EnterPhoneNumber(user);
 
-                    for (int i = 0; i < users.Count; i++)
+                    users.Add(user);
+
+                    using (FileStream fs = new FileStream("people.json", FileMode.OpenOrCreate)) // папка bin -> debug
                     {
-                        if (user.Login == users[i].Login)
-                        {
-                            if (user.Password != users[i].Password)
+                        jsonFormatter.WriteObject(fs, users);
+                    }
+                    return;
+                }
+                else if (choice == 2)
+                {
+                    User user = new User();
+                    bool check = true;
+
+                    DataContractJsonSerializer jsonFormatter = new DataContractJsonSerializer(typeof(List<User>));
+
+                    JsonReading(jsonFormatter);
+
+                    while (check)
+                    {
+                        Console.Clear();
+                        Console.Write("Введите данные: " +
+                            "\nЛогин: ");
+                        user.Login = Console.ReadLine();
+                        Console.Write("Пароль: ");
+                        user.Password = HideCharacter();
+                        user.Password = user.Password.TrimEnd(user.Password[user.Password.Length - 1]);
+
+                        if (users.Count > 0)
+                            for (int i = 0; i < users.Count; i++)
                             {
-                                Console.WriteLine("\nВы ввели неправильный пароль, нажмите Enter чтобы ввести заново...");
-                                Console.ReadKey(); break;
+                                if (user.Login == users[i].Login)
+                                {
+                                    if (user.Password != users[i].Password)
+                                    {
+                                        Console.WriteLine("\nВы ввели неправильный пароль, нажмите Enter чтобы ввести заново...");
+                                        Console.ReadKey(); break;
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("\nВход выполнен...\n");
+                                        check = false; return;
+                                    }
+                                }
+                                if (i == users.Count - 1)
+                                {
+                                    Console.WriteLine("\nУказанный Вами логин не существует, нажмите Enter чтобы ввести заново...");
+                                    Console.ReadKey();
+                                }
                             }
-                            else
-                            {
-                                check = false; break;
-                            }
-                        }
-                        if (i == users.Count - 1)
+                        else
                         {
-                            Console.WriteLine("\nУказанный Вами логин не существует, нажмите Enter чтобы ввести заново...");
+                            Console.WriteLine("\nУказанный Вами логин не существует, нажмите Enter чтобы пройти регистрацию...");
                             Console.ReadKey();
+                            choice = 1;
+                            break;
                         }
                     }
                 }
-            }
-            else
-            {
-                return;
+                else
+                {
+                    return;
+                }
             }
         }
 
